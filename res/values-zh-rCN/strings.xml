@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Contact Selector Lite</string>
+    <string name="settings_name">Contact Selector Lite 设置</string>
+    <string name="version_name">历史版本</string>
+    <string name="howTo_name">如何做</string>
+    
+    <!--  dialogs -->
+    <string name="reading_contacts">读取联系人</string>
+    <string name="reading_contacts_sms">读取联系人手机号码</string>
+    <string name="reading_contacts_email">读取联系人电子邮件地址</string>
+    <string name="email_copied">%1$d 电子邮件地址被复制到剪贴板</string>
+    <string name="emails_copied">%1$d 电子邮件地址被复制到剪贴板</string>
+    <string name="number_copied">%1$d 号码被复制到剪贴板</string>
+    <string name="numbers_copied">%1$d 号码被复制到剪贴板</string>
+    <string name="item_copied">%1$d 项目复制到剪贴板</string>
+    <string name="items_copied">%1$d 项目被复制到剪贴板</string>
+    <string name="send_email_title">发送电子邮件</string>
+    <string name="send_sms_title">发送短信</string>
+    
+    <!-- widgets -->
+    <string name="copyClipboardButtonLabel">完成</string>
+    <string name="emptyList">没有联系人</string>
+    <string name="emptyList_phone">手机号码中没有联系人</string>
+    <string name="emptyList_email">电子邮件地址中没有联系人</string>
+    <string name="mobile">手机</string>
+    <string name="work_mobile">工作电话</string>
+    <string name="work">工作</string>
+    <string name="home">家</string>
+    <string name="other">其他</string>
+    <string name="display_entry">显示 %1$d 个条目</string>
+    <string name="display_entries">显示 %1$d 个项目</string>
+    
+    <!-- menu -->
+    <string name="select_all">选择全部</string>
+    <string name="select_none">不选择</string>
+    <string name="contact_type">显示</string>
+    <string name="contact_type_number">显示电话号码</string>
+    <string name="contact_type_email">显示电子邮件地址</string>
+    <string name="about">设置</string>
+    
+    <!-- settings -->
+    <string name="cat_startup">在启动时</string>
+    <string name="contact_type_summary">选择在启动时要显示的信息</string>
+    <string name="contact_type_default">电话</string>
+    <string name="about_title">关于</string>
+    <string name="cat_app_launcher">应用程序启动</string>
+    <string name="title_sms_app_preference">启动短信应用程序</string>
+    <string name="summary_sms_app_preference">完成时自动启动短信应用程序。</string>
+    <string name="title_email_app_preference">启动电子邮件应用程序</string>
+    <string name="summary_email_app_preference">完成时自动启动电子邮件应用程序。</string>
+    <string name="email_title">给开发者发送电子邮件</string>
+    <string name="version">版本</string>
+    <string name="howToTitle">如何做</string>
+    <string name="howToInfo">程序使用说明</string>
+    <string name="checkUpdatesTitle">检查更新</string>
+    <string name="checkUpdatesInfo">在电子市场检查更新</string>
+	<string name="howToBody">选择多个电话号码或电子邮件地址然后按 \"完成\"。&lt;p/&gt;
+如果要使用电子邮件或短信应用程序而没有启动, 手动开启并长按 \"到\" 范围并选择 \"粘贴\"&lt;p/&gt;
+检查设置到设置哪些信息, 电话号码或电子邮件地址, 在启动时显示。您还可以禁用自动启动电子邮件/短信应用程序。</string>
+	<string name="versionBody10">
+&lt;b&gt;1.0&lt;/b&gt; &amp;nbsp;&amp;nbsp; &lt;font size=quot;2quot;&gt;(2010年5月1日)&lt;/font&gt;
+	</string>    
+	<string name="versionBody11">
+&lt;b&gt;1.1&lt;/b&gt; &amp;nbsp;&amp;nbsp; &lt;font size=quot;2quot;&gt;(2010年5月15日)&lt;/font&gt;
+&lt;ul&gt;
+	&lt;li&gt;Defect fixed with select all.&lt;/li&gt;
+	&lt;li&gt;按下完成后自动启动电子邮件/短信应用程序（可在设置中禁用）。&lt;/li&gt;
+	&lt;li&gt;长按联系人显示联系方式。&lt;/li&gt;
+	&lt;li&gt;可以指定要显示的信息, 电话号码或电子邮件地址, 在启动中设置。&lt;/li&gt;
+&lt;/ul&gt;
+	</string>
+	<string name="versionBody12">&lt;b&gt;1.2&lt;/b&gt; &amp;nbsp;&amp;nbsp; &lt;font size=quot;2quot;&gt;(May 22, 2010)&lt;/font&gt;
+&lt;ul&gt;
+	&lt;li&gt;消除程序的搜索对话。&lt;/li&gt;
+&lt;/ul&gt;
+	</string>
+	
+</resources>

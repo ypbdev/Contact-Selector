@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  
+  	<group
+  		android:id="@+id/select_group">
+	    <item 
+	    	android:id="@+id/select_all"
+	        android:title="@string/select_all" />
+	
+	    <item 
+	    	android:id="@+id/select_none"
+	        android:title="@string/select_none" />
+	</group>
+	
+	<item
+		android:id="@+id/contact_type"
+		android:title="@string/contact_type">
+		<menu>
+			<group
+				android:id="@+id/contact_type_group">
+				<item
+					android:id="@+id/contact_type_number"
+					android:title="@string/contact_type_number"/>
+				
+				<item
+					android:id="@+id/contact_type_email"
+					android:title="@string/contact_type_email"/>
+			</group>
+		</menu>
+	</item>
+	
+	<item
+		android:id="@+id/about"
+		android:title="@string/about" />
+	        
+</menu>

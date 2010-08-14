@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+       android:title="@string/cat_startup">
+           
+	    <ListPreference
+	            android:key="default_display"
+	            android:defaultValue="@string/contact_type_default"
+	            android:title="@string/contact_type"
+	            android:summary="@string/contact_type_summary"
+	            android:entries="@array/entries_default_display"
+	            android:entryValues="@array/entryvalues_default_display"
+	            android:dialogTitle="@string/contact_type" />
+           
+  	</PreferenceCategory>
+  
+    <PreferenceCategory
+       android:title="@string/cat_app_launcher">
+           
+       	<CheckBoxPreference
+            android:key="launch_sms_app"
+            android:defaultValue="true"
+            android:title="@string/title_sms_app_preference"
+            android:summary="@string/summary_sms_app_preference"/>
+       
+	    <CheckBoxPreference
+            android:key="launch_email_app"
+            android:defaultValue="true"
+            android:title="@string/title_email_app_preference"
+            android:summary="@string/summary_email_app_preference"/>
+           
+  	</PreferenceCategory>
+
+    <PreferenceCategory
+       android:title="@string/cat_phone_types">
+           
+	    <ListPreference
+	            android:key="phone_types"
+	            android:defaultValue="@string/phone_type_default"
+	            android:title="@string/phone_type"
+	            android:summary="@string/phone_type_summary"
+	            android:entries="@array/entries_phone_types"
+	            android:entryValues="@array/entryvalues_phone_types"
+	            android:dialogTitle="@string/phone_type" />
+           
+  	</PreferenceCategory>
+
+	<PreferenceCategory
+		android:title="@string/about_title">
+		
+		<PreferenceScreen
+			android:title="@string/version"
+			android:summary="@string/versionNum">
+
+			<intent 
+				android:action="net.ypb.contactselector.SHOW_VERSION" />
+
+		</PreferenceScreen>
+		
+		<PreferenceScreen
+			android:title="@string/howToTitle"
+			android:summary="@string/howToInfo">
+
+			<intent 
+				android:action="net.ypb.contactselector.SHOW_HOWTO" />
+
+		</PreferenceScreen>
+
+		<PreferenceScreen
+			android:title="@string/checkUpdatesTitle"
+			android:summary="@string/checkUpdatesInfo">
+			
+			<intent 
+				android:action="android.intent.action.VIEW"
+				android:data="market://search?q=pname:net.ypb.contactselector" />
+					
+		</PreferenceScreen>
+
+		<PreferenceScreen
+			android:title="@string/email_title">
+			
+			<intent 
+				android:action="net.ypb.contactselector.SEND_EMAIL" />
+					
+		</PreferenceScreen>
+		
+	</PreferenceCategory>  	
+</PreferenceScreen>

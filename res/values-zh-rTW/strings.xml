@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Contact Selector Lite</string>
+    <string name="settings_name">Contact Selector Lite 設定</string>
+    <string name="version_name">歷史版本</string>
+    <string name="howTo_name">如何做</string>
+    
+    <!--  dialogs -->
+    <string name="reading_contacts">讀取聯絡人</string>
+    <string name="reading_contacts_sms">讀取聯絡人手機號碼</string>
+    <string name="reading_contacts_email">讀取聯絡人電子郵件位址</string>
+    <string name="email_copied">%1$d 電子郵件位址被複製到剪貼簿</string>
+    <string name="emails_copied">%1$d 電子郵件位址被複製到剪貼簿</string>
+    <string name="number_copied">%1$d 號碼被複製到剪貼簿</string>
+    <string name="numbers_copied">%1$d 號碼被複製到剪貼簿</string>
+    <string name="item_copied">%1$d 項目複製到剪貼簿</string>
+    <string name="items_copied">%1$d 項目被複製到剪貼簿</string>
+    <string name="send_email_title">發送電子郵件</string>
+    <string name="send_sms_title">發送短信</string>
+    
+    <!-- widgets -->
+    <string name="copyClipboardButtonLabel">完成</string>
+    <string name="emptyList">沒有聯絡人</string>
+    <string name="emptyList_phone">手機號碼中沒有聯絡人</string>
+    <string name="emptyList_email">電子郵件位址中沒有聯絡人</string>
+    <string name="mobile">手機</string>
+    <string name="work_mobile">工作電話</string>
+    <string name="work">工作</string>
+    <string name="home">家</string>
+    <string name="other">其他</string>
+    <string name="display_entry">顯示 %1$d 個條目</string>
+    <string name="display_entries">顯示 %1$d 個項目</string>
+    
+    <!-- menu -->
+    <string name="select_all">選擇全部</string>
+    <string name="select_none">不選擇</string>
+    <string name="contact_type">顯示</string>
+    <string name="contact_type_number">顯示電話號碼</string>
+    <string name="contact_type_email">顯示電子郵件位址</string>
+    <string name="about">設定</string>
+    
+    <!-- settings -->
+    <string name="cat_startup">在啟動時</string>
+    <string name="contact_type_summary">選擇在啟動時要顯示的資訊</string>
+    <string name="contact_type_default">電話</string>
+    <string name="about_title">關於</string>
+    <string name="cat_app_launcher">套用程式啟動</string>
+    <string name="title_sms_app_preference">啟動短信套用程式</string>
+    <string name="summary_sms_app_preference">完成時自動啟動短信套用程式。</string>
+    <string name="title_email_app_preference">啟動電子郵件套用程式</string>
+    <string name="summary_email_app_preference">完成時自動啟動電子郵件套用程式。</string>
+    <string name="email_title">給開發者發送電子郵件</string>
+    <string name="version">版本</string>
+    <string name="howToTitle">如何做</string>
+    <string name="howToInfo">程式使用說明</string>
+    <string name="checkUpdatesTitle">檢查更新</string>
+    <string name="checkUpdatesInfo">在電子市場檢查更新</string>
+	<string name="howToBody">選擇多個電話號碼或電子郵件位址然後按 \"完成\"。&lt;p/&gt;
+如果要使用電子郵件或短信套用程式而沒有啟動, 手動開啟並長按 \"到\" 範圍並選擇 \"貼上\"&lt;p/&gt;
+檢查設定到設定哪些資訊, 電話號碼或電子郵件位址, 在啟動時顯示。您還可以禁用自動啟動電子郵件/短信套用程式。</string>
+	<string name="versionBody10">
+&lt;b&gt;1.0&lt;/b&gt; &amp;nbsp;&amp;nbsp; &lt;font size=quot;2quot;&gt;(2010年5月1日)&lt;/font&gt;
+	</string>    
+	<string name="versionBody11">
+&lt;b&gt;1.1&lt;/b&gt; &amp;nbsp;&amp;nbsp; &lt;font size=quot;2quot;&gt;(2010年5月15日)&lt;/font&gt;
+&lt;ul&gt;
+	&lt;li&gt;Defect fixed with select all.&lt;/li&gt;
+	&lt;li&gt;按下完成後自動啟動電子郵件/短信套用程式（可在設定中禁用）。&lt;/li&gt;
+	&lt;li&gt;長按聯絡人顯示聯絡方式。&lt;/li&gt;
+	&lt;li&gt;可以指定要顯示的資訊, 電話號碼或電子郵件位址, 在啟動中設定。&lt;/li&gt;
+&lt;/ul&gt;
+	</string>
+	<string name="versionBody12">&lt;b&gt;1.2&lt;/b&gt; &amp;nbsp;&amp;nbsp; &lt;font size=quot;2quot;&gt;(May 22, 2010)&lt;/font&gt;
+&lt;ul&gt;
+	&lt;li&gt;消除程式的搜尋對話。&lt;/li&gt;
+&lt;/ul&gt;
+	</string>
+	
+</resources>

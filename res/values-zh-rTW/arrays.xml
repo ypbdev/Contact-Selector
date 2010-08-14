@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="entries_default_display">
+        <item>顯示電話號碼</item>
+        <item>顯示電子郵件位址</item>
+    </string-array>
+    
+    <string-array name="entryvalues_default_display">
+        <item>電話</item>
+        <item>電子郵件</item>
+    </string-array>
+    
+</resources>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <Button 
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+        android:id="@+id/copyClipboardButton"
+        android:layout_alignParentBottom="true"
+        android:text="@string/copyClipboardButtonLabel"/>
+
+    <ListView
+    	android:id="@+id/contactList"
+    	android:layout_alignParentTop="true"
+    	android:layout_above="@id/copyClipboardButton"
+    	android:layout_width="fill_parent" 
+        android:layout_height="wrap_content"/>
+		 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		 	android:id="@+id/empty_list_view" 
+		    android:layout_centerHorizontal="true"
+		    android:layout_centerVertical="true"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content">
+		
+		    <ProgressBar android:id="@+android:id/progress"
+		    	android:layout_centerVertical="true"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content" />
+		
+			<TextView
+		        android:id="@+id/empty_list_progress_text"
+		        android:textSize="20dip"
+		        android:layout_marginLeft="8dip"
+		        android:layout_toRightOf="@android:id/progress"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"/>
+		
+		</RelativeLayout>
+		<TextView
+	        android:id="@+id/empty_list_view_text"
+	        android:textSize="16dip"
+	        android:layout_centerHorizontal="true"
+	        android:layout_centerVertical="true"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:visibility="gone" />
+</RelativeLayout>

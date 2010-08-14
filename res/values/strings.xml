@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Contact Selector Lite</string>
+    <string name="settings_name">Contact Selector Lite Settings</string>
+    <string name="version_name">Version History</string>
+    <string name="howTo_name">How-To</string>
+    
+    <!--  dialogs -->
+    <string name="reading_contacts">Reading contacts</string>
+    <string name="reading_contacts_sms">Reading contacts with mobile numbers</string>
+    <string name="reading_contacts_phone">Reading contacts with phone numbers</string>
+    <string name="reading_contacts_email">Reading contacts with email addresses</string>
+    <string name="email_copied">%1$d email address was copied to the clipboard</string>
+    <string name="emails_copied">%1$d email addresses were copied to the clipboard</string>
+    <string name="number_copied">%1$d number was copied to the clipboard</string>
+    <string name="numbers_copied">%1$d numbers were copied to the clipboard</string>
+    <string name="item_copied">%1$d item was copied to the clipboard</string>
+    <string name="items_copied">%1$d items were copied to the clipboard</string>
+    <string name="send_email_title">Send Email</string>
+    <string name="send_sms_title">Send SMS</string>
+    
+    <!-- widgets -->
+    <string name="copyClipboardButtonLabel">Done</string>
+    <string name="emptyList">No contacts</string>
+    <string name="emptyList_phone">No contacts with mobile phone numbers</string>
+    <string name="emptyList_email">No contacts with email addresses</string>
+    <string name="mobile">Mobile</string>
+    <string name="work_mobile">Work mobile</string>
+    <string name="work">Work</string>
+    <string name="home">Home</string>
+    <string name="other">Other</string>
+    <string name="display_entry">Displaying %1$d entry</string>
+    <string name="display_entries">Displaying %1$d entries</string>
+    <string name="assistant">Assistant</string>
+    <string name="callback">Callback</string>
+    <string name="car">Car</string>
+    <string name="company">Company</string>
+    <string name="fax_home">Home fax</string>
+    <string name="fax_work">Work fax</string>
+    <string name="isdn">ISDN</string>
+    <string name="main">Main</string>
+    <string name="mms">MMS</string>
+    <string name="other_fax">Other fax</string>
+    <string name="pager">Pager</string>
+    <string name="radio">Radio</string>
+    <string name="telex">Telex</string>
+    <string name="tty_tdd">TTY</string>
+    <string name="work_pager">Work pager</string>
+    <string name="custom">Custom</string>
+    
+    <!-- menu -->
+    <string name="select_all">Select All</string>
+    <string name="select_none">Select None</string>
+    <string name="contact_type">Display</string>
+    <string name="contact_type_number">Show phone numbers</string>
+    <string name="contact_type_email">Show email addresses</string>
+    <string name="about">Settings</string>
+    
+    <!-- settings -->
+    <string name="cat_phone_types">Phone Numbers</string>
+    <string name="phone_type_default">mobile</string>
+    <string name="phone_type">Phone Number Types</string>
+    <string name="phone_type_summary">Select the types of phone numbers to display.</string>
+    <string name="cat_startup">On Startup</string>
+    <string name="contact_type_summary">Choose which information to display on startup</string>
+    <string name="contact_type_default">phone</string>
+    <string name="about_title">About</string>
+    <string name="cat_app_launcher">Application Launcher</string>
+    <string name="title_sms_app_preference">Launch SMS Application</string>
+    <string name="summary_sms_app_preference">Automatically launch an SMS application when done.</string>
+    <string name="title_email_app_preference">Launch Email Application</string>
+    <string name="summary_email_app_preference">Automatically launch an email application when done.</string>
+    <string name="email_title">Email the Developer</string>
+    <string name="version">Version</string>
+    <string name="versionNum">1.4</string>
+    <string name="howToTitle">How-To</string>
+    <string name="howToInfo">Instructions on how to use this app</string>
+    <string name="checkUpdatesTitle">Check for Updates</string>
+    <string name="checkUpdatesInfo">Check for updates in the android marketplace</string>
+	<string name="howToBody">Select multiple phone numbers or email addresses and press \"Done\".&lt;p/&gt;
+If the email or SMS application you want to use doesn\'t open, open it manually and long press the \"To\" field and select \"Paste\".&lt;p/&gt;
+Check the Settings to set which information, phone numbers or email addresses, to display on startup. You can also disable the automatic launching of the email/SMS applications.
+	</string>
+	<string name="versionBody10">
+&lt;b&gt;1.0&lt;/b&gt; &amp;nbsp;&amp;nbsp; &lt;font size=quot;2quot;&gt;(May 1, 2010)&lt;/font&gt;
+	</string>    
+	<string name="versionBody11">
+&lt;b&gt;1.1&lt;/b&gt; &amp;nbsp;&amp;nbsp; &lt;font size=quot;2quot;&gt;(May 15, 2010)&lt;/font&gt;
+&lt;ul&gt;
+	&lt;li&gt;Defect fixed with select all.&lt;/li&gt;
+	&lt;li&gt;Automatically start email/SMS application after pressing Done (can be disabled in Settings).&lt;/li&gt;
+	&lt;li&gt;Long pressing a contact displays their contact information.&lt;/li&gt;
+	&lt;li&gt;Can specify which information to display, phone numbers or email addresses, on startup in Settings.&lt;/li&gt;
+&lt;/ul&gt;
+	</string>
+	<string name="versionBody12">&lt;b&gt;1.2&lt;/b&gt; &amp;nbsp;&amp;nbsp; &lt;font size=quot;2quot;&gt;(May 22, 2010)&lt;/font&gt;
+&lt;ul&gt;
+	&lt;li&gt;Removed modal search dialog.&lt;/li&gt;
+&lt;/ul&gt;
+	</string>
+	<string name="versionBody13">&lt;b&gt;1.3&lt;/b&gt; &amp;nbsp;&amp;nbsp; &lt;font size=quot;2quot;&gt;(May 29, 2010)&lt;/font&gt;
+&lt;ul&gt;
+	&lt;li&gt;Added Chinese translations c/o Net Dragon Websoft Inc.&lt;/li&gt;
+&lt;/ul&gt;
+	</string>
+	<string name="versionBody14">&lt;b&gt;1.4&lt;/b&gt; &amp;nbsp;&amp;nbsp; &lt;font size=quot;2quot;&gt;(July 31, 2010)&lt;/font&gt;
+&lt;ul&gt;
+	&lt;li&gt;Added setting to display all phone numbers.&lt;/li&gt;
+&lt;/ul&gt;
+	</string>
+	
+</resources>

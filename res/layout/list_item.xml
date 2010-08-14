@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+	<TwoLineListItem 
+		android:layout_width="fill_parent"
+		android:layout_height="?android:attr/listPreferredItemHeight"
+		android:layout_weight="1"
+		android:paddingTop="2dip"
+		android:paddingBottom="2dip"
+		android:mode="twoLine">
+		<TextView 
+			android:id="@+id/listItemName"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="6dip"
+			android:textAppearance="?android:attr/textAppearanceLarge"/>
+		<TextView 
+			android:id="@+id/listItemInfo"
+	  		android:layout_width="fill_parent"
+	  		android:layout_height="wrap_content"
+	  		android:layout_below="@id/listItemName"
+	  		android:layout_alignLeft="@id/listItemName"
+	  		android:textAppearance="?android:attr/textAppearanceSmall"/>
+	</TwoLineListItem>
+	<CheckBox
+	  android:id="@+id/listItemCheck"
+	  android:paddingRight="2dp"
+	  android:focusable="false"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"/>		
+ </LinearLayout>
