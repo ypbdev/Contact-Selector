@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 /**
+ * A wrapper activity to send an email back to developer.
+ * 
  * @author Anders
  *
  */

@@ -15,6 +15,8 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 
 /**
+ * Encapsulates the Contacts API for level 2.0 (Eclair) and above.
+ * 
  * @author Anders
  *
  */
@@ -31,6 +33,7 @@ public class ContactAccessorEclair extends ContactAccessor
 		String id = contact.getString(contact.getColumnIndex(ContactsContract.Contacts._ID));
 		String name = contact.getString(contact.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
 		
+		// get the email addresses for the given contact
 		Cursor email = activity.managedQuery( 
 				ContactsContract.CommonDataKinds.Email.CONTENT_URI, 
 				new String[]{ContactsContract.CommonDataKinds.Email.DATA, ContactsContract.CommonDataKinds.Email.TYPE, ContactsContract.CommonDataKinds.Email.DATA3},
@@ -38,7 +41,7 @@ public class ContactAccessorEclair extends ContactAccessor
 				new String[]{id}, null); 
 		
 		email.moveToFirst();
-		Set<String> addresses = new HashSet<String>();
+		Set<String> addresses = new HashSet<String>(); // don't show duplicate email addresses
 		while (!email.isAfterLast())
 		{
 			String address = email.getString(email.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
@@ -51,6 +54,8 @@ public class ContactAccessorEclair extends ContactAccessor
 			{
 				addresses.add(address);
 			}
+			
+			// make sure it's data we're interested in
 			String addressType = "";
 			int type = email.getInt(email.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
 			boolean isInterested = false;
@@ -96,6 +101,7 @@ public class ContactAccessorEclair extends ContactAccessor
 					}
 			}
 		
+			// fill the data structure
 			if (isInterested)
 			{
 				HashMap<String, String> listItemMap = new HashMap<String, String>();
@@ -118,6 +124,7 @@ public class ContactAccessorEclair extends ContactAccessor
 		String id = contact.getString(contact.getColumnIndex(ContactsContract.Contacts._ID));
 		String name = contact.getString(contact.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
 	
+		// get the phone numbers for the given contact
 		Cursor phone = activity.managedQuery(
 				ContactsContract.CommonDataKinds.Phone.CONTENT_URI, 
 				new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.DATA3}, 
@@ -125,6 +132,7 @@ public class ContactAccessorEclair extends ContactAccessor
 				new String[]{id}, 
 				null);
 
+		// make sure we're interested in the data
 		boolean isShowAll = isShowAllNumbers(activity);
 		phone.moveToFirst();
 		while (!phone.isAfterLast())
@@ -325,6 +333,7 @@ public class ContactAccessorEclair extends ContactAccessor
 					}
 			}
 		
+			// fill the returning data structure
 			if (isInterested)
 			{
 				HashMap<String, String> listItemMap = new HashMap<String, String>();
@@ -344,7 +353,7 @@ public class ContactAccessorEclair extends ContactAccessor
 	@Override
 	protected Cursor getContacts(Activity activity)
 	{
-		// Run query
+		// Get all the "visible" contacts
 		Uri uri = ContactsContract.Contacts.CONTENT_URI;
 		String[] projection = new String[]
 			{	ContactsContract.Contacts._ID, 

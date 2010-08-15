@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.webkit.WebView;
 
 /**
+ * Wrapper activity to launch a web view to display the "version history".
+ * 
  * @author Anders
  *
  */

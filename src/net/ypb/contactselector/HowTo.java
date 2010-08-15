@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.webkit.WebView;
 
 /**
+ * A wrapper activity to launch a web view of the "How To" page.
+ * 
  * @author Anders
  *
  */

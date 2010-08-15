@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
 /**
+ * Preference activity.
+ * 
  * @author Anders
  *
  */

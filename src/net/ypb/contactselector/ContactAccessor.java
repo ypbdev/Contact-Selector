@@ -14,6 +14,8 @@ import android.os.Build;
 import android.util.Log;
 
 /**
+ * An encapsulation of the Contacts API.
+ * 
  * @author Anders
  *
  */
@@ -21,11 +23,14 @@ public abstract class ContactAccessor implements ContactConstants
 {
 	private static final String TAG = "ContactAccessor";
 	
-	protected static ContactAccessor mSelf;
+	protected static ContactAccessor _self;
 	
+	/**
+	 * @return the correct ContactAccessor for the OS level.
+	 */
 	public static ContactAccessor getInstance()
 	{
-		if (mSelf==null)
+		if (_self==null)
 		{
             String className = null;
             int sdkVersion = Integer.parseInt(Build.VERSION.SDK);
@@ -43,14 +48,14 @@ public abstract class ContactAccessor implements ContactConstants
                 Class<? extends ContactAccessor> clazz =
                         Class.forName(PACKAGE + "." + className)
                                 .asSubclass(ContactAccessor.class);
-                mSelf = clazz.newInstance();
+                _self = clazz.newInstance();
             } 
             catch (Exception e) 
             {
                 throw new IllegalStateException(e);
             }		
 		}
-		return mSelf;
+		return _self;
 	}
 	
 	/**
@@ -84,7 +89,9 @@ public abstract class ContactAccessor implements ContactConstants
 	 * 
 	 * @param content - the type of information to retrieve
 	 * @param activity - used to manage the cursor
-	 * @return
+	 * @return list of email addresses or phone numbers, 
+	 * 				Map keys:
+	 * 				{@link NAME}, {@link INFO}, {@link CONTACT_ID}
 	 */
 	public List<Map<String, String>> fillData(ContentKind content, Activity activity)
 	{
