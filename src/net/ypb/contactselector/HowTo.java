@@ -29,6 +29,6 @@ public class HowTo extends Activity
 	    String html = ContactConstants.HTML_BODY_PRE +
 	    				getString(R.string.howToBody) +
 	    				ContactConstants.HTML_BODY_POST;
-	    webview.loadData(html, "text/html", "UTF-8");
+	    webview.loadData(html, "text/html", "UTF-8");  //$NON-NLS-1$//$NON-NLS-2$
 	}
 }

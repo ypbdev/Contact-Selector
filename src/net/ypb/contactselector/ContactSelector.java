@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import android.app.Activity;
@@ -12,12 +11,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.AsyncTask.Status;
+import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.text.ClipboardManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -38,24 +41,31 @@ import android.view.animation.LayoutAnimationController;
 import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemLongClickListener;
 
 public class ContactSelector extends Activity implements ContactConstants
 {
+	/**
+	 * Class used to maintain state between activity instances and/or between threads.
+	 * 
+	 * @author anders
+	 *
+	 */
 	private class ContactConfiguration
 	{
 		public ContentKind kind;
-		public List<Map<String, String>> data;
+		public List<ListItem> data;
 		public Activity activity;
 		
-		public ContactConfiguration(List<Map<String, String>> data, ContentKind kind, Activity activity)
+		public ContactConfiguration(List<ListItem> data, ContentKind kind, Activity activity)
 		{
 			this.data = data;
 			this.kind = kind;
@@ -63,6 +73,12 @@ public class ContactSelector extends Activity implements ContactConstants
 		}
 	}
 	
+	/**
+	 * Class used to remove the window displaying the letter while scrolling.
+	 * 
+	 * @author anders
+	 *
+	 */
 	private final class RemoveWindow implements Runnable 
     {
         public void run() 
@@ -71,6 +87,13 @@ public class ContactSelector extends Activity implements ContactConstants
         }
     }
 
+	/**
+	 * Scroller to display the first letter of the name being displayed at the
+	 * top of the screen.
+	 * 
+	 * @author anders
+	 *
+	 */
 	private class ListScroller implements ListView.OnScrollListener
 	{
 		protected char _prevLetter = Character.MIN_VALUE;;
@@ -90,10 +113,14 @@ public class ContactSelector extends Activity implements ContactConstants
 		@Override
 		public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
 		{
-			List<Map<String, String>> data = getListData();
-			if (isReadyScrollPosition() && data!=null && data.size()>0)
+			ListItem data = (ListItem)_contactList.getAdapter().getItem(firstVisibleItem);
+			if (isReadyScrollPosition() && data!=null)
 			{
-				char firstLetter = data.get(firstVisibleItem).get(NAME).charAt(0);
+				if (data instanceof LoadingListItem)
+				{
+					return;
+				}
+				char firstLetter = data.name.charAt(0);
 				if (!isShowScrollPosition() && firstLetter!=_prevLetter)
 				{
 					setShowScrollPosition(true);
@@ -113,83 +140,209 @@ public class ContactSelector extends Activity implements ContactConstants
 		public void onScrollStateChanged(AbsListView view, int scrollState)
 		{
 		}
-		
 	}
 	
-	private class MySimpleAdapter extends SimpleAdapter
+	/**
+	 * Adapter to handle displaying the list of contacts.
+	 * 
+	 * @author anders
+	 *
+	 */
+	private class ContactAdapter extends BaseAdapter
 	{
-		protected boolean _updating;
 
-		/**
-		 * @param context
-		 * @param data
-		 * @param resource
-		 * @param from
-		 * @param to
+		/* (non-Javadoc)
+		 * @see android.widget.Adapter#getCount()
 		 */
-		public MySimpleAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from,
-				int[] to)
+		@Override
+		public int getCount()
 		{
-			super(context, data, resource, from, to);
+			if (_listData==null)
+			{
+				return 0;
+			}
+			int count = _listData.size();
+			return count;
 		}
 
+		/* (non-Javadoc)
+		 * @see android.widget.Adapter#getItem(int)
+		 */
+		@Override
+		public Object getItem(int position)
+		{
+			int count = getCount();
+			if (getCount()>0 &&
+					position>=0 &&
+					position<count)
+			{
+				return _listData.get(position);
+			}
+			return null;
+		}
+
+		/* (non-Javadoc)
+		 * @see android.widget.Adapter#getItemId(int)
+		 */
+		@Override
+		public long getItemId(int position)
+		{
+			ListItem row = (ListItem)getItem(position);
+			if (row!=null)
+			{
+				return row.contact_id.hashCode() + row.info.hashCode();
+			}
+			return 0;
+		}
+
+		/* (non-Javadoc)
+		 * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
+		 */
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
-			View view = super.getView(position, convertView, parent);
-			CheckBox check = (CheckBox)view.findViewById(R.id.listItemCheck);
-			String pos = String.valueOf(position);
-			_updating = true;
-			check.setChecked(_selected.contains(pos));
-			_updating = false;
-			if (check!=null)
+			if (getCount()==0)
 			{
-				check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-					{
-						@Override
-						public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-						{
-							// ensure this is a user generated event
-							if (_updating)
-							{
-								return;
-							}
-							ViewParent linearLayout = buttonView.getParent();
-							ListView listView = (ListView)linearLayout.getParent();
-							int pos = listView.getPositionForView(buttonView);
-							if (listView.getCount()>0)
-							{
-								// if the list has content then the header is in the children list
-								pos--;
-							}
-							setSelected(pos, isChecked);
-							Log.v(TAG, "onCheckedChangeListener called "+buttonView+"\t"+pos);
-						}
-					});
+				return convertView;
 			}
+			View view = null;
+			Object item = getItem(position);
+			if (item instanceof LoadingListItem)
+			{
+				return _loadingView;
+			}
+			else if (_loadingView.equals(convertView))
+			{
+				// this isn't the loading item but the loading view is being converted,
+				// nullify to ensure a list item gets created.
+				convertView = null;
+			}
+			
+			if (convertView==null)
+			{
+				view = getLayoutInflater().inflate(R.layout.list_item, null);
+			}
+			else
+			{
+				view = convertView;
+			}
+			
+			TextView name = (TextView)view.findViewById(R.id.listItemName);
+			TextView info = (TextView)view.findViewById(R.id.listItemInfo);
+			CheckBox check = (CheckBox)view.findViewById(R.id.listItemCheck);
+			
+			ListItem data = (ListItem)getItem(position);
+			
+			name.setText(data.name);
+			info.setText(data.info);
+
+			check.setOnCheckedChangeListener(null);
+			check.setChecked(_selected.contains(String.valueOf(position)));
+			check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+			{
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+				{
+					ViewParent linearLayout = buttonView.getParent();
+					ListView listView = (ListView)linearLayout.getParent();
+					int pos = listView.getPositionForView(buttonView);
+					if (listView.getCount()>0)
+					{
+						// if the list has content then the header is in the children list
+						pos--;
+					}
+					setSelected(pos, isChecked);
+				}
+			});
+			
 			return view;
 		}
 	}
-
-	private class ReadContactsTask extends AsyncTask<ContactConfiguration, Integer, ContactConfiguration>
+	
+	/**
+	 * Task to handle querying and parsing the contacts.
+	 * 
+	 * @author anders
+	 *
+	 */
+	private class ReadContactsTask extends AsyncTask<ContactConfiguration, List<ListItem>, ContactConfiguration>
 	{
 		/* (non-Javadoc)
 		 * @see android.os.AsyncTask#doInBackground(Params[])
 		 */
+		@SuppressWarnings("unchecked")
 		@Override
 		protected ContactConfiguration doInBackground(ContactConfiguration... payload)
 		{
-			payload[0].data.addAll(ContactAccessor.getInstance().fillData(payload[0].kind, payload[0].activity));
+			String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP + " = '1'"; //$NON-NLS-1$
+			if (payload[0].kind==ContentKind.PHONE)
+			{
+				selection += " AND " + ContactsContract.Contacts.HAS_PHONE_NUMBER + " = '1'";  //$NON-NLS-1$//$NON-NLS-2$
+			}
+			Cursor contacts = ContactAccessor.getInstance().getContacts(payload[0].activity, selection);
+			if (contacts.moveToFirst())
+			{
+				ContentKind content = payload[0].kind;
+				List<ListItem> data = new ArrayList<ListItem>();
+				Activity activity = payload[0].activity;
+				
+				int counter = 0;
+				while (!contacts.isAfterLast())
+				{
+					if (content==ContentKind.PHONE)
+					{
+						ContactAccessor.getInstance().fillPhoneData(contacts, data, activity);
+					}
+					else if (content==ContentKind.EMAIL)
+					{
+						ContactAccessor.getInstance().fillEmailData(contacts, data, activity);
+					}
+					counter++;
+					if ((counter % 10)==0)
+					{
+						// copy the data to send to the UI thread to display
+						List<ListItem> uiData = new ArrayList<ListItem>(data.size());
+						for (ListItem item : data)
+						{
+							uiData.add(item);
+						}
+						publishProgress(uiData);
+						data.clear();
+					}
+					contacts.moveToNext();
+				}
+				
+				if (!data.isEmpty())
+				{
+					publishProgress(data);
+				}
+			}
+			contacts.close();
 			return payload[0];
 		}
 
+		protected void onProgressUpdate(java.util.List<ListItem>[] values) 
+		{
+			_listData.addAll(values[0]);
+			_listData.remove(_loadingItem); // remove
+			_listData.add(_loadingItem); // add back to end
+			ContactAdapter adapter = (ContactAdapter)((HeaderViewListAdapter)_contactList.getAdapter()).getWrappedAdapter();
+			adapter.notifyDataSetChanged(); // tell the adapter we've changed the underlying data
+			refreshList(_listData);
+			_contactList.invalidateViews();
+		};
+		
 		/* (non-Javadoc)
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
 		@Override
 		protected void onPostExecute(ContactConfiguration payload)
 		{
-			setListAdapter(payload.data);
+			_listData.remove(_loadingItem); // done loading, remove the loading view
+			ContactAdapter adapter = (ContactAdapter)((HeaderViewListAdapter)_contactList.getAdapter()).getWrappedAdapter();
+			adapter.notifyDataSetChanged(); // tell the adapter we've changed the underlying data
+			refreshList(_listData);
+			_contactList.invalidateViews();
 			setProgressBarIndeterminateVisibility(false);
 		}
 
@@ -200,11 +353,11 @@ public class ContactSelector extends Activity implements ContactConstants
 		protected void onPreExecute()
 		{
 			setProgressBarIndeterminateVisibility(true);
+			_listData.add(_loadingItem); // starting loading, add the "Loading..." item
 		}
-		
 	}
 	
-	public static final String TAG = "ContactSelector";
+	public static final String TAG = "ContactSelector"; //$NON-NLS-1$
 	
 	protected ContentKind _defaultContent = ContentKind.PHONE;
 	protected ContentKind _contentKind;
@@ -215,17 +368,18 @@ public class ContactSelector extends Activity implements ContactConstants
 	protected WindowManager _windowManager;
 	protected ClipboardManager _clipboardManager;
 	protected boolean _readyScrollPosition;
-	protected List<Map<String, String>> _listData;
+	protected List<ListItem> _listData;
 	protected TextView _positionText;
 	protected TextView _headerView;
-	protected Handler _handler = new Handler();
+	protected View _loadingView;
+	protected Handler _handler;
 	protected ReadContactsTask _contactsTask;
+	protected LoadingListItem _loadingItem = new LoadingListItem();
 	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
-		Log.v(TAG, "Activity State: onCreate()");
 		super.onCreate(savedInstanceState);
 
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -235,13 +389,14 @@ public class ContactSelector extends Activity implements ContactConstants
 		setContentView(R.layout.main);
 
 		_contactList = (ListView)findViewById(R.id.contactList);
-		TextView progressText = (TextView)findViewById(R.id.empty_list_progress_text);
-		progressText.setText(getProgressText());
-		_contactList.setEmptyView(findViewById(R.id.empty_list_view));
+		_contactList.setEmptyView(findViewById(R.id.empty_list_view_text));
 		
 		_headerView = new TextView(this);
 		_headerView.setGravity(Gravity.CENTER_HORIZONTAL);
 		_contactList.addHeaderView(_headerView);
+		
+		_loadingView = getLayoutInflater().inflate(R.layout.empty_list_item, null);
+		refreshLoadingView();
 		
 		Object storedData = getLastNonConfigurationInstance();
 		if (storedData!=null)
@@ -253,18 +408,18 @@ public class ContactSelector extends Activity implements ContactConstants
 		
 		if (_listData==null)
 		{
-			_listData = new ArrayList<Map<String, String>>();
+			_listData = new ArrayList<ListItem>();
 			_contactsTask = new ReadContactsTask();
 			_contactsTask.execute(new ContactConfiguration(_listData, getContentKind(), this));
 		}
-		else
-		{
-			setListAdapter(_listData);
-		}
-		
+		refreshList(_listData);
+		_contactList.setAdapter(new ContactAdapter());
 		_contactList.setLayoutAnimation(getListAnimation());
 		_contactList.setOnScrollListener(new ListScroller());
-		
+
+		_selected = new HashSet<String>();
+
+		_handler = new Handler();
         _handler.post(new Runnable() 
         {
             public void run() 
@@ -285,7 +440,7 @@ public class ContactSelector extends Activity implements ContactConstants
         		@Override
         		public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
         		{
-        			String cid = _listData.get(position-1).get(CONTACT_ID); // position-1 for the entries view
+        			String cid = _listData.get(position-1).contact_id; // position-1 for the entries view
         			Uri contactUri = Uri.withAppendedPath(ContactAccessor.getInstance().getContactLookupUri(), cid);
         			Intent i = new Intent(Intent.ACTION_VIEW, contactUri);
         			if (isIntentAvailable(i))
@@ -302,35 +457,35 @@ public class ContactSelector extends Activity implements ContactConstants
 				@Override
 				public void onClick(View v)
 				{
-					Log.d(TAG, "copyClipboardButton pressed");
+					Log.d(TAG, "copyClipboardButton pressed"); //$NON-NLS-1$
 					
 					StringBuffer sBuffer = new StringBuffer();
 					List<String> results = performCopyToClipboard(null, sBuffer);
 					int copied = results.size();
 					String title = null;
 					Intent i = null;
-					String text = "";
+					String text = ""; //$NON-NLS-1$
 					boolean launchApp = false;
 					if (getContentKind()==ContentKind.EMAIL)
 					{
 						text = (copied==1?getString(R.string.email_copied):getString(R.string.emails_copied));
 						i = new Intent(Intent.ACTION_SEND);
-						i.setType("plain/text");  
+						i.setType("plain/text");   //$NON-NLS-1$
 						i.putExtra(Intent.EXTRA_EMAIL, results.toArray(new String[results.size()]));
 						title = (String)getText(R.string.send_email_title);
 						
-						launchApp = getSharedPreferences("net.ypb.contactselector_preferences", MODE_PRIVATE).getBoolean("launch_email_app", true);
+						launchApp = PreferenceManager.getDefaultSharedPreferences(ContactSelector.this).getBoolean("launch_email_app", true); //$NON-NLS-1$
 					}
 					else if (getContentKind()==ContentKind.PHONE)
 					{
 						text = (copied==1?getString(R.string.number_copied):getString(R.string.numbers_copied));
-						Uri smsUri = Uri.parse("sms:"+sBuffer.toString());  
+						Uri smsUri = Uri.parse("sms:"+sBuffer.toString());   //$NON-NLS-1$
 						i = new Intent(Intent.ACTION_VIEW, smsUri); 
-						i.putExtra("address", sBuffer.toString());
-						i.setType("vnd.android-dir/mms-sms");  
+						i.putExtra("address", sBuffer.toString()); //$NON-NLS-1$
+						i.setType("vnd.android-dir/mms-sms");   //$NON-NLS-1$
 						title = (String)getText(R.string.send_sms_title);
 						
-						launchApp = getSharedPreferences("net.ypb.contactselector_preferences", MODE_PRIVATE).getBoolean("launch_sms_app", true);
+						launchApp = PreferenceManager.getDefaultSharedPreferences(ContactSelector.this).getBoolean("launch_sms_app", true); //$NON-NLS-1$
 					}
 					else
 					{
@@ -354,11 +509,21 @@ public class ContactSelector extends Activity implements ContactConstants
 			});
 	}
 
-	protected synchronized void setListAdapter(List<Map<String, String>> listData)
+	@Override
+	public void onConfigurationChanged(Configuration newConfig)
 	{
-		_selected = new HashSet<String>(listData.size());
-
-		String headerText = "";
+		super.onConfigurationChanged(newConfig);
+	}
+	
+	protected void refreshLoadingView()
+	{
+		TextView loadingText = (TextView)_loadingView.findViewById(R.id.empty_list_progress_text);
+		loadingText.setText(getProgressText());
+	}
+	
+	protected synchronized void refreshList(List<ListItem> listData)
+	{
+		String headerText = ""; //$NON-NLS-1$
 		if (listData.size()!=1)
 		{
 			headerText = getString(R.string.display_entries, listData.size());
@@ -369,16 +534,9 @@ public class ContactSelector extends Activity implements ContactConstants
 		}
 		_headerView.setText(headerText);
 		
-		MySimpleAdapter adapter = new MySimpleAdapter(
-				this,
-				listData,
-				R.layout.list_item,
-				new String[]{ NAME, INFO },
-				new int[] { R.id.listItemName, R.id.listItemInfo });
-		
+		TextView empty = (TextView)findViewById(R.id.empty_list_view_text);
 		if (listData.size()==0)
 		{
-			TextView empty = (TextView)findViewById(R.id.empty_list_view_text);
 			if (ContentKind.EMAIL==getContentKind())
 			{
 				empty.setText(getText(R.string.emptyList_email));
@@ -391,33 +549,38 @@ public class ContactSelector extends Activity implements ContactConstants
 			{
 				empty.setText(getText(R.string.emptyList));
 			}
-			_contactList.getEmptyView().setVisibility(View.GONE);
-			_contactList.setEmptyView(empty);
+			empty.setVisibility(View.VISIBLE);
 		}
-		_contactList.setAdapter(adapter);
-		
+		else
+		{
+			empty.setVisibility(View.GONE);
+		}
 	}
 	
 	protected List<String> performCopyToClipboard(Bundle bundle, StringBuffer buffer)
 	{
 		int result = 0;
 		List<String> entries = new ArrayList<String>();
+		if (_selected==null)
+		{
+			return entries;
+		}
 		StringBuffer clipboard = new StringBuffer();
 		for (Iterator<String> iter = _selected.iterator(); iter.hasNext();)
 		{
 			if (result>0)
 			{
-				clipboard.append(", ");
-				buffer.append(", ");
+				clipboard.append(", "); //$NON-NLS-1$
+				buffer.append(", "); //$NON-NLS-1$
 			}
 			
 			String sPos = iter.next();
 			int pos = Integer.valueOf(sPos).intValue();
-			Map<String, String> dataMap = _listData.get(pos);
-			String name = dataMap.get(NAME);
-			String info = dataMap.get(INFO);
+			ListItem data = _listData.get(pos);
+			String name = data.name;
+			String info = data.info;
 			info = info.substring(0, info.indexOf(INFO_SEPARATOR));
-			String entry = name + " " + INFO_OPEN + info + INFO_CLOSE;
+			String entry = name + " " + INFO_OPEN + info + INFO_CLOSE; //$NON-NLS-1$
 			clipboard.append(entry);
 			buffer.append(info);
 			entries.add(entry);
@@ -429,7 +592,7 @@ public class ContactSelector extends Activity implements ContactConstants
 		{
 			if (bundle!=null)
 			{
-				bundle.putString("result", clipboard.toString());
+				bundle.putString("result", clipboard.toString()); //$NON-NLS-1$
 			}
 			else
 			{
@@ -446,7 +609,7 @@ public class ContactSelector extends Activity implements ContactConstants
 	{
 		if (_contentKind==null)
 		{
-			String dflt = getSharedPreferences("net.ypb.contactselector_preferences", MODE_PRIVATE).getString("default_display", getString(R.string.contact_type_default));
+			String dflt = PreferenceManager.getDefaultSharedPreferences(this).getString("default_display", getString(R.string.contact_type_default)); //$NON-NLS-1$
 			String[] values = getResources().getStringArray(R.array.entryvalues_default_display);
 			if (values[0].equals(dflt))
 			{
@@ -461,7 +624,6 @@ public class ContactSelector extends Activity implements ContactConstants
 				_contentKind = _defaultContent;
 			}
 		}
-		Log.v(TAG, "Getting content kind: "+_contentKind.name());
 		return _contentKind;
 	}
 
@@ -470,7 +632,6 @@ public class ContactSelector extends Activity implements ContactConstants
 	 */
 	protected void setContentKind(ContentKind contentKind)
 	{
-		Log.v(TAG, "Setting content kind to "+contentKind.name());
 		_contentKind = contentKind;
 	}
 
@@ -556,22 +717,6 @@ public class ContactSelector extends Activity implements ContactConstants
 	}
 
 	/**
-	 * @return the listData
-	 */
-	public List<Map<String, String>> getListData()
-	{
-		return _listData;
-	}
-
-	/**
-	 * @param listData the listData to set
-	 */
-	public void setListData(List<Map<String, String>> listData)
-	{
-		_listData = listData;
-	}
-
-	/**
 	 * @return the positionText
 	 */
 	public TextView getPositionText()
@@ -654,17 +799,19 @@ public class ContactSelector extends Activity implements ContactConstants
 			case R.id.contact_type_email:
 			{
 				setContentKind(ContentKind.EMAIL);
-		        _listData = new ArrayList<Map<String, String>>();
+				refreshLoadingView();
+				_listData = new ArrayList<ListItem>();
 				_contactsTask = new ReadContactsTask();
-				_contactsTask.execute(new ContactConfiguration(getListData(), getContentKind(), this));
+				_contactsTask.execute(new ContactConfiguration(_listData, getContentKind(), this));
 				return true;
 			}
 			case R.id.contact_type_number:
 			{
 				setContentKind(ContentKind.PHONE);
-		        _listData = new ArrayList<Map<String, String>>();
+				refreshLoadingView();
+				_listData = new ArrayList<ListItem>();
 				_contactsTask = new ReadContactsTask();
-				_contactsTask.execute(new ContactConfiguration(getListData(), getContentKind(), this));
+				_contactsTask.execute(new ContactConfiguration(_listData, getContentKind(), this));
 		        return true;
 			}
 			case R.id.about:
@@ -724,11 +871,11 @@ public class ContactSelector extends Activity implements ContactConstants
 		if (_contactsTask!=null)
 		{
 			Status status = _contactsTask.getStatus();
+			_contactsTask.cancel(true);
 			if (Status.FINISHED!=status)
 			{
 				_listData = null;
 			}
-			_contactsTask.cancel(true);
 		}
 		ContactConfiguration config = new ContactConfiguration(_listData, getContentKind(), null);
 		

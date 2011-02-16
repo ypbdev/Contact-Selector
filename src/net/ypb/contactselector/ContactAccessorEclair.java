@@ -3,10 +3,8 @@
  */
 package net.ypb.contactselector;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import android.app.Activity;
@@ -28,7 +26,7 @@ public class ContactAccessorEclair extends ContactAccessor
 	 * @see net.ypb.contactselector.ContactAccessor#fillEmailData(android.database.Cursor, java.util.List, android.app.Activity)
 	 */
 	@Override
-	protected void fillEmailData(Cursor contact, List<Map<String, String>> data, Activity activity)
+	public void fillEmailData(Cursor contact, List<ListItem> data, Activity activity)
 	{
 		String id = contact.getString(contact.getColumnIndex(ContactsContract.Contacts._ID));
 		String name = contact.getString(contact.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
@@ -37,7 +35,7 @@ public class ContactAccessorEclair extends ContactAccessor
 		Cursor email = activity.managedQuery( 
 				ContactsContract.CommonDataKinds.Email.CONTENT_URI, 
 				new String[]{ContactsContract.CommonDataKinds.Email.DATA, ContactsContract.CommonDataKinds.Email.TYPE, ContactsContract.CommonDataKinds.Email.DATA3},
-				ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", 
+				ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",  //$NON-NLS-1$
 				new String[]{id}, null); 
 		
 		email.moveToFirst();
@@ -56,7 +54,7 @@ public class ContactAccessorEclair extends ContactAccessor
 			}
 			
 			// make sure it's data we're interested in
-			String addressType = "";
+			String addressType = ""; //$NON-NLS-1$
 			int type = email.getInt(email.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
 			boolean isInterested = false;
 			switch (type)
@@ -104,11 +102,7 @@ public class ContactAccessorEclair extends ContactAccessor
 			// fill the data structure
 			if (isInterested)
 			{
-				HashMap<String, String> listItemMap = new HashMap<String, String>();
-				listItemMap.put(NAME, name);
-				listItemMap.put(INFO, address+INFO_SEPARATOR+addressType);
-				listItemMap.put(CONTACT_ID, id);
-				data.add(listItemMap);
+				data.add(new ListItem(name, address+INFO_SEPARATOR+addressType, id));
 			}
 			email.moveToNext();
 		}
@@ -119,16 +113,16 @@ public class ContactAccessorEclair extends ContactAccessor
 	 * @see net.ypb.contactselector.ContactAccessor#fillPhoneData(android.database.Cursor, java.util.List, android.app.Activity)
 	 */
 	@Override
-	protected void fillPhoneData(Cursor contact, List<Map<String, String>> data, Activity activity)
+	public void fillPhoneData(Cursor contact, List<ListItem> data, Activity activity)
 	{
 		String id = contact.getString(contact.getColumnIndex(ContactsContract.Contacts._ID));
 		String name = contact.getString(contact.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-	
+		
 		// get the phone numbers for the given contact
 		Cursor phone = activity.managedQuery(
 				ContactsContract.CommonDataKinds.Phone.CONTENT_URI, 
 				new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.DATA3}, 
-				ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?", 
+				ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",  //$NON-NLS-1$
 				new String[]{id}, 
 				null);
 
@@ -138,7 +132,7 @@ public class ContactAccessorEclair extends ContactAccessor
 		while (!phone.isAfterLast())
 		{
 			String number = phone.getString(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-			String numberType = "";
+			String numberType = ""; //$NON-NLS-1$
 			int type = phone.getInt(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
 			boolean isInterested = false;
 			switch (type)
@@ -336,11 +330,7 @@ public class ContactAccessorEclair extends ContactAccessor
 			// fill the returning data structure
 			if (isInterested)
 			{
-				HashMap<String, String> listItemMap = new HashMap<String, String>();
-				listItemMap.put(NAME, name);
-				listItemMap.put(INFO, number+INFO_SEPARATOR+numberType);
-				listItemMap.put(CONTACT_ID, id);
-				data.add(listItemMap);
+				data.add(new ListItem(name, number+INFO_SEPARATOR+numberType, id));
 			}
 			phone.moveToNext();
 		}
@@ -351,18 +341,16 @@ public class ContactAccessorEclair extends ContactAccessor
 	 * @see net.ypb.contactselector.ContactAccessor#getContacts(android.app.Activity)
 	 */
 	@Override
-	protected Cursor getContacts(Activity activity)
+	public Cursor getContacts(Activity activity, String selection)
 	{
 		// Get all the "visible" contacts
 		Uri uri = ContactsContract.Contacts.CONTENT_URI;
 		String[] projection = new String[]
 			{	ContactsContract.Contacts._ID, 
-				ContactsContract.Contacts.DISPLAY_NAME,
-				ContactsContract.Contacts.HAS_PHONE_NUMBER
+				ContactsContract.Contacts.DISPLAY_NAME
 			};
-		String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP + " = '1'";
 		String[] selectionArgs = null;
-		String sortOrder = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
+		String sortOrder = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC"; //$NON-NLS-1$
 		return activity.managedQuery(uri, projection, selection, selectionArgs, sortOrder);
 	}
 
